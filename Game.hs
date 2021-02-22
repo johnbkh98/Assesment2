@@ -57,7 +57,7 @@ actionAttack Spoon (GS p r) =
 --   has an empty inventory
 -- Making a Player with emply inventory
 playerStart :: Player
-playerStart = Player "John" []
+playerStart = Player "Bright" []
     
 game0 :: GameState
 game0 = GS playerStart startRoom
@@ -65,7 +65,9 @@ game0 = GS playerStart startRoom
 
 -- Chunk 2
 --7) Implement a Parsable instance for Item. Item names should be parsed lower case.
+
 --8) Implement a Parsable instance for Direction. Directions should be parsed lower case
+
 --9) Implement a Parsable instance for Command which parses the following inputs to commands:
 --10) Define a function tellResponse that takes a string and outputs it (i.e., writes to standard (3 marks)
 --   output) with the following form, e.g., where message is the input string here:
