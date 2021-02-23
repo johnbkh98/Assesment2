@@ -97,13 +97,25 @@ instance Parsable Command where
         parse "use key"    = Just (Use Spoon)
         parse "end"        = Just End
         parse _            = Nothing
+        
 --10) Define a function tellResponse that takes a string and outputs it (i.e., writes to standard (3 marks)
 --   output) with the following form, e.g., where message is the input string here:
 -- tellContextLine :: String -> IO ()
 -- tellContextLine s = putStrLn $ "   " ++ s ++ "."
 tellResponse :: String -> IO ()
 tellResponse s = putStrLn $ " < " ++ s ++ " ."
+
 --11) Define a function readCommand :: IO (Maybe Command) that outputs the string "> " 
 --using putStr2 and then reads a line of input from the user with getLine and returns the result
 --of parsing the user’s input string via parse
 
+readCommand :: IO (Maybe Command)
+readCommand = do 
+        putStr "> "
+        i <- getLine 
+        putStrLn $ read i
+        return(parse i)
+
+--14)
+step :: Command -> GameState -> Next GameState
+step c g = undefined 
