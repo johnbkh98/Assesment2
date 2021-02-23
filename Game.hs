@@ -1,6 +1,10 @@
 --Author John Hayford
 --Last edited 15/02/2021
 import Base
+import Data.Char
+
+lowerString :: [Char] -> [Char]
+lowerString str = [ toLower loweredString | loweredString <- str]
 
 --Chunk 1 Creating a map (30 marks)
 --1) function "opposite" to compute a direction’s opposite, e.g., opposite North = South
@@ -36,7 +40,7 @@ myMonster = WoodTroll 10 Key
 
 leadRoom :: startRoom -> Room
 leadRoom startRoom = Room "Leading Room" "Room that leads from previous room. This room has a woodtroll who holds a spoon" 
- False Nothing [] [myMonster] []noActions
+ False Nothing [] [myMonster] [] actionAttack
         
 
 
@@ -65,13 +69,41 @@ game0 = GS playerStart startRoom
 
 -- Chunk 2
 --7) Implement a Parsable instance for Item. Item names should be parsed lower case.
-
+-- class Parsable t where
+--   parse :: String -> Maybe t
+instance Parsable Item where
+    parse "spoon" =  Just Spoon
+    parse "key"   = Just Key
+    parse _       = Nothing
 --8) Implement a Parsable instance for Direction. Directions should be parsed lower case
+instance Parsable Direction where
+        parse "north" = Just North
+        parse "south" = Just South
+        parse "east"  = Just East
+        parse "west"  = Just West
+        parse _       = Nothing 
 
 --9) Implement a Parsable instance for Command which parses the following inputs to commands:
+instance Parsable Command where
+        parse "go north" = Just (Move North)
+        parse "go south" = Just (Move South)
+        parse "go east"  = Just (Move East)
+        parse "go west"  = Just (Move West)
+        
+        parse "grab spoon" = Just (PickUp Spoon)
+        parse "grab key"   = Just (PickUp Key)
+
+        parse "use spoon"  = Just (Use Spoon)
+        parse "use key"    = Just (Use Spoon)
+        parse "end"        = Just End
+        parse _            = Nothing
 --10) Define a function tellResponse that takes a string and outputs it (i.e., writes to standard (3 marks)
 --   output) with the following form, e.g., where message is the input string here:
-
+-- tellContextLine :: String -> IO ()
+-- tellContextLine s = putStrLn $ "   " ++ s ++ "."
+tellResponse :: String -> IO ()
+tellResponse s = putStrLn $ " < " ++ s ++ " ."
 --11) Define a function readCommand :: IO (Maybe Command) that outputs the string "> " 
 --using putStr2 and then reads a line of input from the user with getLine and returns the result
 --of parsing the user’s input string via parse
+
