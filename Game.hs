@@ -20,12 +20,12 @@ noActions  i g =  Same $ "No futher action can be done with item: " ++   show i 
 
 --3)
 winRoom :: Room
-winRoom = Room "winning room" "this room is the winning room" True Nothing [] [] [] noActions
+winRoom = Room "winning room" "this room is the winning room you won" True (Just Key) [] [] [] noActions
 
 --4)
 startRoom :: Room
 startRoom = Room  "Starting Room" "Room where the game is started. There is a room available in this room. Enjoy the game player"
- False Nothing    [(Spoon, "Spoon item can be used to attack monster")] [] [(North, winRoom)] noActions
+ False Nothing [(Spoon, "Spoon item can be used to attack monster")] [] [(North, winRoom)] noActions
 
 --5)
 myMonster :: Monster
