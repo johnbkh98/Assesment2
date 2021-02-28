@@ -1,3 +1,4 @@
+module Game where
 --Author John Hayford
 --Last edited 15/02/2021
 import Base
@@ -25,19 +26,15 @@ winRoom = Room "winning room" "this room is the winning room you won" True (Just
 --4)
 startRoom :: Room
 startRoom = Room  "Starting Room" "Room where the game is started. There is a room available in this room. Enjoy the game player"
- False Nothing [(Spoon, "Spoon item can be used to attack monster")] [] [(North, winRoom)] noActions
+ False Nothing [(Spoon, "Spoon item can be used to attack monster")] [] [(North, leadRoom)] noActions
 
 --5)
+-- monster for leadRoom with 10hp nad a Key
 myMonster :: Monster
 myMonster = WoodTroll 10 Key 
-
-leadRoom :: startRoom -> Room
-leadRoom startRoom = Room "Leading Room" "Room that leads from previous room. This room has a woodtroll who holds a spoon" 
- False Nothing [] [myMonster] [] actionAttack
-        
-
-
-
+--action implementation. Spoon can only deal 5 dmg if there is a montser in the room
+-- Nothing will happen if you attack with spoon with no monster in room
+-- if there is a montser, the monster loses 5hp, if its hp is > 5 it dies.
 actionAttack :: Item -> GameState -> Next GameState
 actionAttack Spoon (GS p r) =
         case monsters r of
@@ -45,11 +42,16 @@ actionAttack Spoon (GS p r) =
                 ((WoodTroll h i) :ms) ->
                         if h <= 5 
                                 then
-                                let r' = r {monsters = (WoodTroll 0 i) : ms}
+                                let r' = r {monsters = WoodTroll 0 i : ms}
                                 in Progress "Nice Strike you killed the monster" (GS p r')
                                 else
-                                let s = r {monsters = (WoodTroll 5 i) : ms}
+                                let s = r {monsters = WoodTroll 5 i : ms}
                                 in Progress "Nice Strike you killed the monster" (GS p s)
+--definning leadRoom
+leadRoom :: Room
+leadRoom = Room "Leading Room" "Room that leads from previous room. This room has a woodtroll who holds a spoon" 
+ False Nothing [] [myMonster] [(North, leadRoom)] actionAttack
+
 --6) 
 playerStart :: Player
 playerStart = Player "Bright" []
@@ -105,14 +107,20 @@ readCommand = do
 --12)
 deleteFrom :: Eq a => a -> [(a, b)] -> [(a, b)]
 deleteFrom a [] = []
-deleteFrom a ((l, r) :xs) | a==l      = deleteFrom a xs
+deleteFrom a ((l, r) :xs) | a==l       = deleteFrom a xs
                           |  otherwise = (l, r): deleteFrom a xs
 
-
-
 --13)
+--delete in the list of doors (of the toRoom) the room that is at the opposite direction
+--thanks to deleteFrom and after you add the fromRoom to the toRoom's room list.
 leaveRoom :: Room -> Direction -> Room -> Room
-leaveRoom = undefined 
---14)
-step :: Command -> GameState -> Next GameState
-step c g = undefined 
+leaveRoom fR d tR = 
+        case doors tR of
+                [] -> fR
+
+
+
+
+-- --14)
+-- step :: Command -> GameState -> Next GameState
+-- step c g = undefined --
