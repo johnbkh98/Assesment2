@@ -90,7 +90,7 @@ instance Parsable Command where
         parse "use key"    = Just (Use Spoon)
         parse "end"        = Just End
         parse _            = Nothing
-        
+
 --10) 
 tellResponse :: String -> IO ()
 tellResponse s = putStrLn $ " < " ++ s ++ " ."
@@ -111,16 +111,15 @@ deleteFrom a ((l, r) :xs) | a==l       = deleteFrom a xs
                           |  otherwise = (l, r): deleteFrom a xs
 
 --13)
---delete in the list of doors (of the toRoom) the room that is at the opposite direction
---thanks to deleteFrom and after you add the fromRoom to the toRoom's room list.
+
 leaveRoom :: Room -> Direction -> Room -> Room
-leaveRoom fR d tR = 
-        case doors tR of
-                [] -> fR
+leaveRoom fR dir tR = tR {doors = tR'} where 
+         back = opposite dir
+         tR'  = (back, fR) : deleteFrom back (doors tR)
 
 
 
 
 -- --14)
--- step :: Command -> GameState -> Next GameState
--- step c g = undefined --
+step :: Command -> GameState -> Next GameState
+step c g = undefined --
