@@ -51,12 +51,13 @@ instance Show Direction where
   show West   = "west"
 
 -- ## Items and monsters
-data Item = Key | Spoon
+data Item = Key | Spoon | Gloves --Bonus new item added (Gloves) 
   deriving Eq
 
 instance Show Item where
   show Key   = "key"
   show Spoon = "spoon"
+  show Gloves = "gloves"
 
 data Monster = WoodTroll { health :: Int, holding :: Item }
 
