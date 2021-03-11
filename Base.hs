@@ -63,7 +63,7 @@ instance Show Item where
 data Monster = WoodTroll { health :: Int, holding :: Item }
 
 instance Show Monster where
-  show (WoodTroll health item) = "wood troll holding a " ++ show item ++ " It looks weak to spoon"
+  show (WoodTroll health item) = "wood troll holding a " ++ show item ++ ". It looks weak to spoon"
 
 -- ## Command interface
 

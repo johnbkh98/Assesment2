@@ -142,7 +142,7 @@ step (Move dirc) (GS p r)
 
 step (PickUp item) (GS p r) =
         case lookup item (items r) of
-                Nothing -> Same (show item ++ " is not not in the room")
+                Nothing -> Same (show item ++ " is not in the room")
                 Just i -> Progress  (show item ++ " has been added to your inventory")
                         (GS p {inventory = item : inventory p} r 
                                 {items = deleteFrom item (items r)}) 
@@ -168,7 +168,7 @@ playLoop :: GameState -> IO ()
 playLoop (GS p r) =
         if isWinRoom r then
                 do 
-                        tellResponse "You beat the game Good job"
+                        tellResponse ("You beat the game Good job " ++ show (playerName p))
                         return ()
         else 
                 do
