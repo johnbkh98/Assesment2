@@ -20,6 +20,7 @@ data Player =
   Player
     {   playerName :: String
       , inventory  :: [Item]
+      , pHealth      :: Int --17 Bonnuss add health to player
     }
 
 -- ## Room (where all the action happens)
@@ -51,18 +52,18 @@ instance Show Direction where
   show West   = "west"
 
 -- ## Items and monsters
-data Item = Key | Spoon | Gloves --Bonus new item added (Gloves) 
+data Item = Key | Spoon | Sandwich --Bonus new item added (Gloves) 
   deriving Eq
 
 instance Show Item where
   show Key   = "key"
   show Spoon = "spoon"
-  show Gloves = "gloves"
+  show Sandwich = "sandwich" --gives player health
 
 data Monster = WoodTroll { health :: Int, holding :: Item }
 
 instance Show Monster where
-  show (WoodTroll health item) = "wood troll holding a " ++ show item
+  show (WoodTroll health item) = "wood troll holding a " ++ show item ++ " It looks weak to spoon"
 
 -- ## Command interface
 
@@ -86,7 +87,7 @@ tellDoors doors =
   tellContextLine $ "There are doors to the " ++ (intercalate " and " (map (show . fst) doors))
 
 tellItem :: (Item, String) -> IO ()
-tellItem (item, pos) = tellContextLine $ pos ++ " on the table there is a " ++ show item --string modified
+tellItem (item, pos) = tellContextLine $ pos ++ " there is a " ++ show item --string modified
 
 tellMonster :: Monster -> IO ()
 tellMonster monster = tellContextLine $ "There is a " ++ show monster

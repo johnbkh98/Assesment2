@@ -1,6 +1,6 @@
 module Game where
 --Author John Hayford
---Last edited 15/02/2021
+--Last edited 11/03/2021
 import Base
 import Data.Char
 import HelpFunc
@@ -27,8 +27,8 @@ winRoom = Room "winning room" "Congratulations you made it to the winning Room" 
 
 --4)
 startRoom :: Room
-startRoom = Room  "Kicthen" "breezy and cold."
- False Nothing [(Spoon, ""), (Gloves,"")] [] [(South, leadRoom),(East, winRoom),(West, gymRoom)]
+startRoom = Room  "Kicthen" "breezy, cold and smells delightful"
+ False Nothing [(Spoon, "In a mug, on the table,"), (Sandwich,"On the table,")] [] [(South, leadRoom),(East, winRoom)]
   noActions
 
 --5) monster defined in HelpFunc.hs
@@ -39,26 +39,26 @@ actionAttack Spoon (GS p r) =
         ((WoodTroll h i) :ms) ->
                 if h <= 5 
                         then
-                        let r' = r {monsters = WoodTroll 0 i : ms}
+                        let r' = r {monsters = [], items = (Key, "on the floor"): items r}
                         in Progress "Nice Strike you killed the monster" (GS p r')
                         else
                         let s = r {monsters = WoodTroll 5 i : ms}
                         in Progress "Monster took -5hp from that attack and is still standing" (GS p s)
 
-                                -- then Progress "you hit the monster it looks weak" (GS p r {monseters = [WoodTroll 5 [Key]})
+          -- then Progress "you hit the monster it looks weak" (GS p r {monseters = [WoodTroll 5 [Key]})
 
-                                -- then Progress "you hit the monster it looks weak" (GS p r{monsters r = [WoodTroll (health(head(monsters r))-5) [Key]})
+                                
 
 --definning leadRoom
 leadRoom :: Room
-leadRoom = Room "Corridor" "quite dark. You see a monster who is weak to spoon" 
+leadRoom = Room "Corridor" "quite dark but you see muddy foot prints " 
  False Nothing [] [myMonster] [(North, startRoom)] actionAttack
 
 
 
 --6) 
 playerStart :: Player
-playerStart = Player "Bright" []
+playerStart = Player "Bright" [] 20
     
 game0 :: GameState
 game0 = GS playerStart startRoom
@@ -70,7 +70,7 @@ game0 = GS playerStart startRoom
 instance Parsable Item where
     parse "spoon"  =  Just Spoon
     parse "key"    = Just Key
-    parse "gloves" = Just Gloves
+    parse "sandwich" = Just Sandwich
     parse _        = Nothing
 --8)
 instance Parsable Direction where
@@ -143,25 +143,16 @@ step (PickUp item) (GS p r) =
         case lookup item (items r) of
                 Nothing -> Same (show item ++ " is not not in the room")
                 Just i -> Progress  (show item ++ " has been added to your inventory")
-                        (GS p {inventory = [item]} r {items = deleteFrom item (items r)}) 
+                        (GS p {inventory = item : inventory p} r {items = deleteFrom item (items r)}) 
         
+step (Use item) (GS p r) 
+        | item `elem` inventory p = 
+                case item of
+                        Spoon -> actions r item (GS p r)
+                        Sandwich -> Progress ("You ate the Sandwich, your health is now " ++ show (pHealth p + 50))
+                                         (GS p {pHealth = pHealth p + 50, inventory = removeFrom item (inventory p)} r)
+        | otherwise = Same (show item ++ " is not in your inventory")
 
--- Use item, if the item is in the player’s inventory, then apply the current room’s actions
--- function to the item to compute the next game state.
--- Otherwise, stay in the same state with a message that the player doesn’t have the item.
-
--- step (Use item) (GS p r)  =
---                 case inventory p of
---                         []     -> Same (" Your inventory is empty")
---                         (x:xs) -> 
---                                 | item `elem` inventory p == True = Progress ("You've used " ++ show item )
---                                         (GS p (r item))
---                                 | otherwise = Same (show item ++ " is not in your inventory") g 
---                                
--- step (Use item) (GS p r)  =
---                 case inventory p of
---                         | []= False = Same (" Your inventory is empty")
---15)
 
 play :: GameState -> IO()
 play gs = do
@@ -203,7 +194,5 @@ playLoop (GS p r) =
 main :: IO ()
 main = play game0
 
---17) Bonus item gloves. -action in HelpFunc.hs
-gymRoom :: Room
-gymRoom = Room "Gym Room" "very bright. You see a woodtroll in a boxing shorts. It is weak to gloves" 
- False Nothing [] [myMonster] [(East, startRoom)] actionGloves
+--17) Bonus added health to player
+
