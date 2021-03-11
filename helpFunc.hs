@@ -18,7 +18,7 @@ getRoom x ((y,z) : xs)
         | x==y  = z
         | otherwise = getRoom x xs
 
---17) bonus
+--17) bonus -- helperFunction
 removeFrom :: Item -> [Item] -> [Item]
 removeFrom _ [] = []
 removeFrom i (x:xs)

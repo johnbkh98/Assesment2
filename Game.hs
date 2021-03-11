@@ -28,8 +28,8 @@ winRoom = Room "winning room" "Congratulations you made it to the winning Room" 
 --4)
 startRoom :: Room
 startRoom = Room  "Kicthen" "breezy, cold and smells delightful"
- False Nothing [(Spoon, "In a mug, on the table,"), (Sandwich,"On the table,")] [] [(South, leadRoom),(East, winRoom)]
-  noActions
+ False Nothing [(Spoon, "In a mug, on the table,"), (Sandwich,"On the table,")] [] 
+ [(South, leadRoom),(East, winRoom)] noActions
 
 --5) monster defined in HelpFunc.hs
 actionAttack :: Item -> GameState -> Next GameState
@@ -43,22 +43,23 @@ actionAttack Spoon (GS p r) =
                         in Progress "Nice Strike you killed the monster" (GS p r')
                         else
                         let s = r {monsters = WoodTroll 5 i : ms}
-                        in Progress "Monster took -5hp from that attack and is still standing" (GS p s)
+                        in Progress "Monster took -5hp from that attack and is still standing" 
+                        (GS p s)
 
-          -- then Progress "you hit the monster it looks weak" (GS p r {monseters = [WoodTroll 5 [Key]})
+-- then Progress "you hit the monster it looks weak" (GS p r {monseters = [WoodTroll 5 [Key]})
 
                                 
 
 --definning leadRoom
 leadRoom :: Room
-leadRoom = Room "Corridor" "quite dark but you see muddy foot prints " 
+leadRoom = Room "Corridor" "quite dark but you see muddy foot prints" 
  False Nothing [] [myMonster] [(North, startRoom)] actionAttack
 
 
 
---6) 
+--6/ 17) 
 playerStart :: Player
-playerStart = Player "Bright" [] 20
+playerStart = Player "Bright" [] 20 --bonus added health
     
 game0 :: GameState
 game0 = GS playerStart startRoom
@@ -125,7 +126,7 @@ leaveRoom fR dir tR = tR {doors = tR'} where
          back = opposite dir
          tR'  = (back, fR) : deleteFrom back (doors tR)
 
--- --14) getRoom and checkList in HelpFunc.hs
+-- --14 /17) getRoom and checkList in HelpFunc.hs
 --implementing step
 step :: Command -> GameState -> Next GameState
 step (Move dirc) (GS p r) 
@@ -143,14 +144,17 @@ step (PickUp item) (GS p r) =
         case lookup item (items r) of
                 Nothing -> Same (show item ++ " is not not in the room")
                 Just i -> Progress  (show item ++ " has been added to your inventory")
-                        (GS p {inventory = item : inventory p} r {items = deleteFrom item (items r)}) 
+                        (GS p {inventory = item : inventory p} r 
+                                {items = deleteFrom item (items r)}) 
         
 step (Use item) (GS p r) 
         | item `elem` inventory p = 
                 case item of
                         Spoon -> actions r item (GS p r)
-                        Sandwich -> Progress ("You ate the Sandwich, your health is now " ++ show (pHealth p + 50))
-                                         (GS p {pHealth = pHealth p + 50, inventory = removeFrom item (inventory p)} r)
+                        Sandwich -> Progress ("You ate the Sandwich, your health is now " ++ 
+                                        show (pHealth p + 50))
+                                         (GS p {pHealth = pHealth p + 50, 
+                                         inventory = removeFrom item (inventory p)} r)
         | otherwise = Same (show item ++ " is not in your inventory")
 
 
@@ -194,5 +198,5 @@ playLoop (GS p r) =
 main :: IO ()
 main = play game0
 
---17) Bonus added health to player
+--17) Bonus *Added item Sandwich that give health to player*
 

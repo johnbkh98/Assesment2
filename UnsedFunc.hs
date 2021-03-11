@@ -23,4 +23,6 @@ isNoMonster i
 
 -- actionAttack :: Item -> GameState -> Next GameState
 -- actionAttack i (GS _ (Room _ _ _ _ _ monsterList _ _)) 
---         | i == Spoon && isNoMonster monsterList == True  = Same "No monster to attack in this room. Use your Items wisely"
+--         | i == Spoon && isNoMonster monsterList == True  
+--                = Same "No monster to attack in this room. Use your Items wisely"
+--done
