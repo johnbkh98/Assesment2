@@ -86,7 +86,7 @@ tellDoors doors =
   tellContextLine $ "There are doors to the " ++ (intercalate " and " (map (show . fst) doors))
 
 tellItem :: (Item, String) -> IO ()
-tellItem (item, pos) = tellContextLine $ pos ++ " there is a " ++ show item
+tellItem (item, pos) = tellContextLine $ pos ++ " on the table there is a " ++ show item --string modified
 
 tellMonster :: Monster -> IO ()
 tellMonster monster = tellContextLine $ "There is a " ++ show monster

@@ -1,27 +1,33 @@
+module HelpFunc where
 import Base
 
--- getting access to the list of monster
-monstersList :: GameState -> [Monster]
-monstersList gamestate = monsters (room gamestate)
+--5)-- monster for leadRoom with 10hp nad a Key
+myMonster :: Monster
+myMonster = WoodTroll 10 Key
+
+--14) helperFunctions
+checkList :: Eq a => a -> [(a,b)] -> Bool
+checkList _ []           = False 
+checkList x ((y,z) : xs) 
+        | x==y      = True 
+        | otherwise = checkList x xs
 
 
--- deadMonster WoodTroll  (health :: Int, holding :: Item)
+getRoom :: Direction -> [(Direction, Room)] -> Room 
+getRoom x ((y,z) : xs)
+        | x==y  = z
+        | otherwise = getRoom x xs
 
---checking number of Monsters
-monsterNum :: [Monster] -> Int
-monsterNum []     = 0 --base case
-monsterNum (_:xs) = 1 + monsterNum xs
-
--- checking is there is monster in List
-isNoMonster :: [Monster] -> Bool
-isNoMonster i  
-        |  monsterNum i == 0   = True
-        |  otherwise           = False 
-
--- monsHealth ((WoodTroll health  _))
---         | health <= 5 = health -5
---         | health > 5 = health -5
-
--- actionAttack :: Item -> GameState -> Next GameState
--- actionAttack i (GS _ (Room _ _ _ _ _ monsterList _ _)) 
---         | i == Spoon && isNoMonster monsterList == True  = Same "No monster to attack in this room. Use your Items wisely"
+--17) bonus
+actionGloves :: Item -> GameState -> Next GameState
+actionGloves Gloves (GS p r) =
+        case monsters r of
+                [] -> Same "No monster to attack in this room. Use your Items wisely"
+                ((WoodTroll h i) :ms) ->
+                        if h <= 5 
+                                then
+                                let r' = r {monsters = WoodTroll 0 i : ms}
+                                in Progress "Nice punch, you killed the monster!" (GS p r')
+                                else
+                                let s = r {monsters = WoodTroll 5 i : ms}
+                                in Progress "The Monster ate that punch up but took -5hp and is still standing" (GS p s)
